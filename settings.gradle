@@ -1,0 +1,2 @@
+include ':app', ':jaudiotagger-2.2.6-SNAPSHOT'
+rootProject.name='hw_4'

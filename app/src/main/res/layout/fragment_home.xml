@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.hw_4.ui.home.HomeFragment">
+    <data>
+        <variable
+            name="fragment"
+            type="com.example.hw_4.ui.home.HomeFragment"/>
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/home">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="8dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="63dp"
+            android:layout_marginRight="10dp"
+            android:stretchColumns="*">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="6"
+                android:id="@+id/replace">
+            </FrameLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical" >
+                <SeekBar
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.5"
+                    android:max="100"
+                    android:id="@+id/seekBar"
+                    />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.5"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:id="@+id/nowSeekTextView"
+                        android:gravity="top|left"
+                        android:text="00:00" />
+                    <TextView
+
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:id="@+id/maxSeekTextView"
+                        android:gravity="top|right"
+                        android:text="00:00" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:id="@+id/music_title"
+                android:gravity="center_horizontal|center_vertical"
+                android:textSize="30sp"
+                android:text="Unknown Music" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:id="@+id/music_artist"
+                android:gravity="center_horizontal|center_vertical"
+                android:textSize="20sp"
+                android:text="Unknown Artist" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:orientation="horizontal" >
+                <ImageButton
+                    android:layout_width= "0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:id = "@+id/imageButton1"
+                    android:background="@android:color/transparent"
+                    android:padding="25dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:src = "@drawable/ic_action_repeat"/>
+                <ImageButton
+                    android:layout_width= "0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:padding="25dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:id = "@+id/imageButton2"
+                    android:src = "@drawable/ic_action_left"/>
+                <ImageButton
+                    android:layout_width= "0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:padding="15dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:id = "@+id/playButton"
+                    android:onClick="@{(view) -> fragment.pressPlay(view)}"
+                    android:src = "@drawable/ic_action_play"/>
+                <ImageButton
+                    android:layout_width= "0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:padding="25dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:id = "@+id/imageButton4"
+                    android:src = "@drawable/ic_action_right"/>
+                <ImageButton
+                    android:layout_width= "0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:padding="25dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:id = "@+id/imageButton5"
+                    android:src = "@drawable/ic_action_shuffle"/>
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
