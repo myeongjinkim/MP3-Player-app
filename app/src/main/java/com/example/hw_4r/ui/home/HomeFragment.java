@@ -56,6 +56,7 @@ public class HomeFragment extends Fragment {
     private StringBuilder path;
     private String musicPath;
 
+    private HomeModel homeModel;
 
     static {
         System.loadLibrary("native-lib");
@@ -70,6 +71,10 @@ public class HomeFragment extends Fragment {
         homeJacketFragment = new HomeJacketFragment();
         path=new StringBuilder();
 
+        //데이터베이스
+        HomeModel homeModel = new HomeModel();
+        homeModel.Firebase();
+
 
     }
     public View onCreateView(LayoutInflater inflater,
@@ -82,11 +87,14 @@ public class HomeFragment extends Fragment {
         maxSeekText = (TextView) rootView.findViewById(R.id.maxSeekTextView);
         seekbar = (SeekBar)rootView.findViewById(R.id.seekBar);
 
+
+
+
         path.append("/data/data/com.example.hw_4r/music/");
         fs = new File(path.toString());
 
         musicDirectory();
-        if(musicPath!=null){
+        if(fs.isFile()){
             mediaPlayer = MediaPlayer.create(getActivity(), Uri.parse(musicPath));
             maxSeek= mediaPlayer.getDuration();
             seekbar.setMax(maxSeek);

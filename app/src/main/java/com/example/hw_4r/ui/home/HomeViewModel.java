@@ -11,7 +11,6 @@ public class HomeViewModel extends ViewModel {
 
     private MutableLiveData<String> lyrics;
     private Boolean check;
-    private String lyricsText;
 
     public HomeViewModel() {
         lyrics = new MutableLiveData<>();
