@@ -2,11 +2,11 @@
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.hw_4.ui.home.HomeLyricsFragment">
+    tools:context="com.example.hw_4r.ui.home.HomeLyricsFragment">
     <data>
         <variable
             name="fragment"
-            type="com.example.hw_4.ui.home.HomeLyricsFragment"/>
+            type="com.example.hw_4r.ui.home.HomeLyricsFragment"/>
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
