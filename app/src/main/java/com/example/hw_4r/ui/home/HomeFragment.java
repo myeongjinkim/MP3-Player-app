@@ -73,7 +73,7 @@ public class HomeFragment extends Fragment {
 
         //데이터베이스
         HomeModel homeModel = new HomeModel();
-        homeModel.Firebase();
+        homeModel.check();
 
 
     }
