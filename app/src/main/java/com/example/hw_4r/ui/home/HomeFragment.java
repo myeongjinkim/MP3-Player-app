@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.hw_4r.R;
 import com.example.hw_4r.databinding.FragmentHomeBinding;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.mp3.MP3File;
@@ -30,6 +31,7 @@ import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 
 public class HomeFragment extends Fragment {
 
@@ -55,8 +57,8 @@ public class HomeFragment extends Fragment {
     private File fs;
     private StringBuilder path;
     private String musicPath;
-
     private HomeModel homeModel;
+
 
     static {
         System.loadLibrary("native-lib");
@@ -69,11 +71,15 @@ public class HomeFragment extends Fragment {
         // 화면 전환 프래그먼트 선언 및 초기 화면 설정
         homeLyricsFragment = new HomeLyricsFragment();
         homeJacketFragment = new HomeJacketFragment();
+        homeModel = new HomeModel();
         path=new StringBuilder();
-
-        //데이터베이스
-        HomeModel homeModel = new HomeModel();
         homeModel.check();
+
+        path= new StringBuilder();
+        path.append("/data/data/com.example.hw_4r/music/");
+
+        fs = new File(path.toString());
+
 
 
     }
@@ -87,13 +93,16 @@ public class HomeFragment extends Fragment {
         maxSeekText = (TextView) rootView.findViewById(R.id.maxSeekTextView);
         seekbar = (SeekBar)rootView.findViewById(R.id.seekBar);
 
-
-
-
-        path.append("/data/data/com.example.hw_4r/music/");
-        fs = new File(path.toString());
-
+        //데이터베이스
         musicDirectory();
+
+
+        String name = homeModel.getName();
+        System.out.println("됨    "+name);
+        //File fa = new File(name);
+
+
+        //musicData(fa);
         if(fs.isFile()){
             mediaPlayer = MediaPlayer.create(getActivity(), Uri.parse(musicPath));
             maxSeek= mediaPlayer.getDuration();
@@ -212,6 +221,7 @@ public class HomeFragment extends Fragment {
         }
     }
     public void musicData(File f){
+
         try{
             MP3File mp3 = (MP3File) AudioFileIO.read(f);
             musicPath = f.getPath();

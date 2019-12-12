@@ -30,7 +30,6 @@ public class HomeModel{
     private int file_num;
     private int file_size;
     private int now;
-    private FirebaseDatabase database;
     private  DatabaseReference myRef;
     public HomeModel(){
         file_size=0;
@@ -40,12 +39,12 @@ public class HomeModel{
         path.append("/data/data/com.example.hw_4r/music/");
         hm = new HashMap<>();
 
-        database = FirebaseDatabase.getInstance();
-        myRef = database.getReference();
+        myRef = FirebaseDatabase.getInstance().getReference();
+        fs = new File(path.toString());
     }
     public void check(){
 
-        fs = new File(path.toString());
+
         File[] list = fs.listFiles();
         file_num= list.length;
         if(fs.isDirectory()){
@@ -59,23 +58,29 @@ public class HomeModel{
         System.out.println(file_num);
         System.out.println(file_size);
 
+        myRef = FirebaseDatabase.getInstance().getReference();
         myRef.child("file").addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         // Get user value
+                        System.out.println("들감?");
                         hm = (HashMap<Object, String>) (dataSnapshot.getValue());
                         if(hm==null){
+                            System.out.println("들감2?");
                             hm = new HashMap<>();
                             hm.put(Integer.toString(file_num),Integer.toString(file_size));
                             myRef.child("file").setValue(hm);
                             Firebase();
                         }else{
+                            System.out.println("들감3?");
                             for(Object key : hm.keySet()){
 
                                 String value = hm.get(key);
 
                                 if(key.equals(Integer.toString(file_num))&&value.equals(Integer.toString(file_size))){
+                                    System.out.println("우선ㄴㄴㄴㄴㄴ");
+                                    nowPlayMusic();
                                 }else{
                                     Firebase();
                                 }
@@ -122,9 +127,12 @@ public class HomeModel{
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         // Get user value
-                        now = ((Long)dataSnapshot.child("current").getValue()).intValue();
 
+                        System.out.println("이거냐0 "+dataSnapshot);
+                        now = ((Long)dataSnapshot.child("current").getValue()).intValue();
+                        System.out.println("이거냐2 "+now);
                         for (DataSnapshot postSnapshot: dataSnapshot.child("music_list").getChildren()) {
+                            System.out.println("이거냐3 "+postSnapshot);
                             if(Integer.parseInt(postSnapshot.getKey())==now){
                                 name= (String) postSnapshot.getValue();
                             }
@@ -138,6 +146,9 @@ public class HomeModel{
                         Log.w(TAG, "getUser:onCancelled", databaseError.toException());
                     }
                 });
+        return name;
+    }
+    public String getName(){
         return name;
     }
 }
