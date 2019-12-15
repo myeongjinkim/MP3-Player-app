@@ -19,30 +19,29 @@ import java.util.HashMap;
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class HomeModel{
-    private String lyrics;
+
     private String title;
     private String artist;
-    private String name;
-    private StringBuilder path;
-    private File fs;
+    private String lyrics;
 
-    private int music_num;
-    private int file_num;
-    private int file_size;
-    private int now;
-    private  DatabaseReference myRef;
     public HomeModel(){
-        file_size=0;
-        file_num=0;
-        music_num=0;
-        path= new StringBuilder();
-        path.append("/data/data/com.example.hw_4r/music/");
-
-
-        myRef = FirebaseDatabase.getInstance().getReference();
-        fs = new File(path.toString());
 
     }
+    public HomeModel( String title, String artist,String lyrics){
+        this.title=title;
+        this.artist = artist;
+        this.lyrics = lyrics;
+    }
+    public String getTitle(){
+        return title;
+    }
+    public String getArtist(){
+        return artist;
+    }
+    public String getLyrics(){
+        return lyrics;
+    }
+
 
 
 }

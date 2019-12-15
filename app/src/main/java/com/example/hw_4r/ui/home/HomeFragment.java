@@ -178,7 +178,6 @@ public class HomeFragment extends Fragment {
     public void already(){
 
         path= homeViewModel.getPath();
-        System.out.println("출력 aa  "+path);
         fs = new File(path);
 
         if(fs.isFile()){

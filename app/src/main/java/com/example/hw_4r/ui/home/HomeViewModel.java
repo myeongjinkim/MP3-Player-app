@@ -45,6 +45,8 @@ public class HomeViewModel extends ViewModel {
     private int now;
     private String artist;
     private String title;
+    private String lyricsDate;
+    private HomeModel homeModel;
 
     private Callback callback;
 
@@ -168,12 +170,12 @@ public class HomeViewModel extends ViewModel {
                     MP3File mp3 = (MP3File) AudioFileIO.read(f);
                     AbstractID3v2Tag tag2 = mp3.getID3v2Tag();
                     Tag tag = mp3.getTag();
-                    LyricsSetting(tag.getFirst(FieldKey.LYRICS));
                     title = tag.getFirst(FieldKey.TITLE);
                     artist = tag.getFirst(FieldKey.ARTIST);
-
-                    /*myRef.child("music_data").setValue();*/
-
+                    lyricsDate = tag.getFirst(FieldKey.LYRICS);
+                    homeModel = new HomeModel(title,artist,lyricsDate);
+                    myRef.child("music_data").child(Integer.toString(music_num)).setValue(homeModel);
+                    LyricsSetting(tag.getFirst(FieldKey.LYRICS));
                 }catch(Exception ex){
                     ex.printStackTrace();
                 }
@@ -194,15 +196,15 @@ public class HomeViewModel extends ViewModel {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         // Get user value
                         now = ((Long)dataSnapshot.child("current").getValue()).intValue();
-                        for (DataSnapshot postSnapshot: dataSnapshot.child("music_list").getChildren()) {
-                            if(Integer.parseInt(postSnapshot.getKey())==now){
-                                path=(String) postSnapshot.getValue();
-                                System.out.println(now+"찾음 "+path);
-                                callback.success(path);
-                                break;
-                            }
+                        path=(String)dataSnapshot.child("music_list").child(Integer.toString(now)).getValue();
 
-                        }
+                        System.out.println(now+"찾음 "+path);
+
+                        homeModel= dataSnapshot.child("music_data").child(Integer.toString(now)).getValue(HomeModel.class);
+                        title=homeModel.getTitle();
+                        artist=homeModel.getArtist();
+                        LyricsSetting(homeModel.getLyrics());
+                        callback.success(path);
 
                     }
 
