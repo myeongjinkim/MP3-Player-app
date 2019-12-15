@@ -173,20 +173,7 @@ public class HomeFragment extends Fragment {
     };
 
 
-    public void musicData(File f){
 
-        try{
-            MP3File mp3 = (MP3File) AudioFileIO.read(f);
-            AbstractID3v2Tag tag2 = mp3.getID3v2Tag();
-            Tag tag = mp3.getTag();
-            homeViewModel.LyricsSetting(tag.getFirst(FieldKey.LYRICS));
-            titleText.setText(tag.getFirst(FieldKey.TITLE));
-            artistText.setText(tag.getFirst(FieldKey.ARTIST));
-
-        }catch(Exception ex){
-            ex.printStackTrace();
-        }
-    }
 
     public void already(){
 
@@ -195,7 +182,9 @@ public class HomeFragment extends Fragment {
         fs = new File(path);
 
         if(fs.isFile()){
-            musicData(fs);
+            //musicData(fs); 여기
+            titleText.setText(homeViewModel.getTitle());
+            artistText.setText(homeViewModel.getArtist());
             mediaPlayer = MediaPlayer.create(getActivity(), Uri.parse(path));
             maxSeek= mediaPlayer.getDuration();
             seekbar.setMax(maxSeek);

@@ -16,6 +16,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.audio.mp3.MP3File;
+import org.jaudiotagger.tag.FieldKey;
+import org.jaudiotagger.tag.Tag;
+import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Queue;
@@ -30,12 +36,15 @@ public class HomeViewModel extends ViewModel {
     private File fs;
     private String path;
 
-    private HashMap<Object, String> hm;
+    private HashMap<Object, String> music_list_hm;
+    private HashMap<Object, String> file_hm;
     private DatabaseReference myRef;
     private int music_num;
     private int file_num;
     private int file_size;
     private int now;
+    private String artist;
+    private String title;
 
     private Callback callback;
 
@@ -46,7 +55,9 @@ public class HomeViewModel extends ViewModel {
 
         path=("/data/data/com.example.hw_4r/music/");
         fs = new File(path);
-        hm = new HashMap<>();
+        music_list_hm = new HashMap<>();
+        file_hm = new HashMap<>();
+
         myRef = FirebaseDatabase.getInstance().getReference();
         callback = null;
     }
@@ -91,36 +102,36 @@ public class HomeViewModel extends ViewModel {
 
 
             System.out.println("뭔데"+s);
-            System.out.println(myRef.child("file").equals(hm));
-            System.out.println("뭔데"+myRef.child("file").equals(hm));
-            hm.put(Integer.toString(file_num),Integer.toString(file_size));
-            System.out.println("뭔데"+myRef.child("file").equals(hm));
+            System.out.println(myRef.child("file").equals(file_hm));
+            System.out.println("뭔데"+myRef.child("file").equals(file_hm));
+            file_hm.put(Integer.toString(file_num),Integer.toString(file_size));
+            System.out.println("뭔데"+myRef.child("file").equals(file_hm));
             myRef.child("file").addListenerForSingleValueEvent(
                     new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             // Get user value
                             System.out.println("d언제되는지");
-                            hm = (HashMap<Object, String>) (dataSnapshot.getValue());
-                            if(hm==null){
+                            file_hm = (HashMap<Object, String>) (dataSnapshot.getValue());
+                            if(file_hm==null){
                                 System.out.println("디비에 없음 완전 새로");
-                                hm = new HashMap<>();
-                                hm.put(Integer.toString(file_num),Integer.toString(file_size));
-                                myRef.child("file").setValue(hm);
+                                file_hm = new HashMap<>();
+                                file_hm.put(Integer.toString(file_num),Integer.toString(file_size));
+                                myRef.child("file").setValue(file_hm);
                                 Firebase();
                             }else{
-                                for(Object key : hm.keySet()){
+                                for(Object key : file_hm.keySet()){
 
-                                    String value = hm.get(key);
+                                    String value = file_hm.get(key);
 
                                     if(key.equals(Integer.toString(file_num))&&value.equals(Integer.toString(file_size))){
                                         System.out.println("디비랑 같음");
                                         break;
                                     }else{
                                         System.out.println("디비랑 다름. 새로 입력");
-                                        hm = new HashMap<>();
-                                        hm.put(Integer.toString(file_num),Integer.toString(file_size));
-                                        myRef.child("file").setValue(hm);
+                                        file_hm = new HashMap<>();
+                                        file_hm.put(Integer.toString(file_num),Integer.toString(file_size));
+                                        myRef.child("file").setValue(file_hm);
                                         Firebase();
                                     }
                                 }
@@ -140,7 +151,7 @@ public class HomeViewModel extends ViewModel {
 
     }
     public void Firebase(){
-        hm = new HashMap<>();
+        music_list_hm = new HashMap<>();
         fs = new File(path.toString());
         if(fs.isDirectory()){
             String decoding = "ISO-8859-1";
@@ -149,9 +160,26 @@ public class HomeViewModel extends ViewModel {
             File list[] = fs.listFiles();
             for(File f : list){
                 music_num++;
-                hm.put(Integer.toString(music_num), f.toString());
-                myRef.child("music_list").setValue(hm);
+                music_list_hm.put(Integer.toString(music_num), f.toString());
+                myRef.child("music_list").setValue(music_list_hm);
                 myRef.child("current").setValue(1);
+
+                try{
+                    MP3File mp3 = (MP3File) AudioFileIO.read(f);
+                    AbstractID3v2Tag tag2 = mp3.getID3v2Tag();
+                    Tag tag = mp3.getTag();
+                    LyricsSetting(tag.getFirst(FieldKey.LYRICS));
+                    title = tag.getFirst(FieldKey.TITLE);
+                    artist = tag.getFirst(FieldKey.ARTIST);
+
+                    /*myRef.child("music_data").setValue();*/
+
+                }catch(Exception ex){
+                    ex.printStackTrace();
+                }
+
+
+
             }
         }
         else {
@@ -191,5 +219,11 @@ public class HomeViewModel extends ViewModel {
     }
     public void setCallback(Callback callback) {
         this.callback = callback;
+    }
+    public String getTitle(){
+        return title;
+    }
+    public String getArtist(){
+        return artist;
     }
 }
