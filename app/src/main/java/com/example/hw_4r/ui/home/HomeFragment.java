@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +22,11 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.hw_4r.R;
 import com.example.hw_4r.databinding.FragmentHomeBinding;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.mp3.MP3File;
@@ -32,6 +37,9 @@ import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+
+import static androidx.constraintlayout.widget.Constraints.TAG;
+import static java.lang.Thread.sleep;
 
 public class HomeFragment extends Fragment {
 
@@ -55,9 +63,11 @@ public class HomeFragment extends Fragment {
     private TextView maxSeekText;
     private TextView nowSeekText;
     private File fs;
-    private StringBuilder path;
-    private String musicPath;
-    private HomeModel homeModel;
+
+    private String path;
+
+
+
 
 
     static {
@@ -71,20 +81,11 @@ public class HomeFragment extends Fragment {
         // 화면 전환 프래그먼트 선언 및 초기 화면 설정
         homeLyricsFragment = new HomeLyricsFragment();
         homeJacketFragment = new HomeJacketFragment();
-        homeModel = new HomeModel();
-        path=new StringBuilder();
-        homeModel.check();
-
-        path= new StringBuilder();
-        path.append("/data/data/com.example.hw_4r/music/");
-
-        fs = new File(path.toString());
-
-
 
     }
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         homeViewModel = ViewModelProviders.of(getActivity()).get(HomeViewModel.class);
         titleText = (TextView) rootView.findViewById(R.id.music_title);
@@ -93,18 +94,14 @@ public class HomeFragment extends Fragment {
         maxSeekText = (TextView) rootView.findViewById(R.id.maxSeekTextView);
         seekbar = (SeekBar)rootView.findViewById(R.id.seekBar);
 
-        //데이터베이스
-        musicDirectory();
 
+        path= homeViewModel.getPath();
+        System.out.println("출력 aa  "+path);
+        fs = new File(path);
 
-        String name = homeModel.getName();
-        System.out.println("됨    "+name);
-        //File fa = new File(name);
-
-
-        //musicData(fa);
         if(fs.isFile()){
-            mediaPlayer = MediaPlayer.create(getActivity(), Uri.parse(musicPath));
+            musicData(fs);
+            mediaPlayer = MediaPlayer.create(getActivity(), Uri.parse(path));
             maxSeek= mediaPlayer.getDuration();
             seekbar.setMax(maxSeek);
 
@@ -184,7 +181,7 @@ public class HomeFragment extends Fragment {
             public void run(){
                 while(mediaPlayer.isPlaying()){
                     try {
-                        Thread.sleep(1000);
+                        sleep(1000);
                     } catch (InterruptedException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -206,25 +203,11 @@ public class HomeFragment extends Fragment {
         }
     };
 
-    public void musicDirectory(){
 
-        if(fs.isDirectory()){
-            String decoding = "ISO-8859-1";
-            String encoding = "EUC-KR";
-
-            File list[] = fs.listFiles();
-            for(File f : list){
-                musicData(f);
-            }
-        }
-        else {
-        }
-    }
     public void musicData(File f){
 
         try{
             MP3File mp3 = (MP3File) AudioFileIO.read(f);
-            musicPath = f.getPath();
             AbstractID3v2Tag tag2 = mp3.getID3v2Tag();
             Tag tag = mp3.getTag();
             homeViewModel.LyricsSetting(tag.getFirst(FieldKey.LYRICS));
@@ -237,4 +220,8 @@ public class HomeFragment extends Fragment {
     }
 
     public native String changeTime(int intTime);
+
+
+
+
 }

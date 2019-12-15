@@ -3,6 +3,7 @@ package com.example.hw_4r;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.example.hw_4r.ui.home.HomeModel;
 import com.example.hw_4r.ui.home.HomeViewModel;
 
 import androidx.lifecycle.ViewModelProviders;
@@ -54,7 +55,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         HomeViewModel model= new HomeViewModel();
-
+        model.musicCheck();
+        System.out.println("해봐"+ model.getPath());
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
