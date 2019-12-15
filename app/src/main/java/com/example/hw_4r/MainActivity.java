@@ -33,6 +33,8 @@ import java.io.IOException;
 import java.net.URI;
 
 import java.io.File;
+import java.util.HashMap;
+
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.mp3.MP3File;
 import org.jaudiotagger.tag.FieldKey;
@@ -55,7 +57,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         HomeViewModel model= new HomeViewModel();
-        model.musicCheck();
+
+
         System.out.println("해봐"+ model.getPath());
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);

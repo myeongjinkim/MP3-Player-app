@@ -94,49 +94,18 @@ public class HomeFragment extends Fragment {
         maxSeekText = (TextView) rootView.findViewById(R.id.maxSeekTextView);
         seekbar = (SeekBar)rootView.findViewById(R.id.seekBar);
 
+        homeViewModel.check();
+        HomeViewModel.Callback callback = new HomeViewModel.Callback() {
+            @Override
+            public void success(String s) {
+                System.out.println("이거지"+s);
+                path=s;
+                System.out.println("출력 aa  "+path);
+                already();
+            }
+        };
+        homeViewModel.setCallback(callback);
 
-        path= homeViewModel.getPath();
-        System.out.println("출력 aa  "+path);
-        fs = new File(path);
-
-        if(fs.isFile()){
-            musicData(fs);
-            mediaPlayer = MediaPlayer.create(getActivity(), Uri.parse(path));
-            maxSeek= mediaPlayer.getDuration();
-            seekbar.setMax(maxSeek);
-
-            maxSeekText.setText(changeTime(maxSeek));
-
-            seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {
-                    // TODO Auto-generated method stub
-                }
-
-                @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {
-                    // TODO Auto-generated method stub
-                }
-
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                    // TODO Auto-generated method stub
-                    if(fromUser) {
-                        mediaPlayer.seekTo(progress);
-                        nowSeek = progress;
-                        nowSeekText.setText(changeTime(nowSeek));
-                    }
-                }
-            });
-
-
-        }
-
-        if( homeViewModel.getCheck()){
-            replaceToJacket();
-        }else{
-            replaceToLyrics();
-        }
         binding = DataBindingUtil.bind(rootView);
         binding.setFragment(this);
         return rootView;
@@ -219,6 +188,51 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    public void already(){
+
+        path= homeViewModel.getPath();
+        System.out.println("출력 aa  "+path);
+        fs = new File(path);
+
+        if(fs.isFile()){
+            musicData(fs);
+            mediaPlayer = MediaPlayer.create(getActivity(), Uri.parse(path));
+            maxSeek= mediaPlayer.getDuration();
+            seekbar.setMax(maxSeek);
+
+            maxSeekText.setText(changeTime(maxSeek));
+
+            seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                    // TODO Auto-generated method stub
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+                    // TODO Auto-generated method stub
+                }
+
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    // TODO Auto-generated method stub
+                    if(fromUser) {
+                        mediaPlayer.seekTo(progress);
+                        nowSeek = progress;
+                        nowSeekText.setText(changeTime(nowSeek));
+                    }
+                }
+            });
+
+
+        }
+
+        if( homeViewModel.getCheck()){
+            replaceToJacket();
+        }else{
+            replaceToLyrics();
+        }
+    }
     public native String changeTime(int intTime);
 
 

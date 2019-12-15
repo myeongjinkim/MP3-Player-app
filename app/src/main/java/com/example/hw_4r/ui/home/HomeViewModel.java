@@ -37,6 +37,8 @@ public class HomeViewModel extends ViewModel {
     private int file_size;
     private int now;
 
+    private Callback callback;
+
     public HomeViewModel() {
         lyrics = new MutableLiveData<>();
         lyrics.setValue("This is home fragment");
@@ -46,9 +48,7 @@ public class HomeViewModel extends ViewModel {
         fs = new File(path);
         hm = new HashMap<>();
         myRef = FirebaseDatabase.getInstance().getReference();
-
-        musicCheck();
-
+        callback = null;
     }
 
 
@@ -76,7 +76,7 @@ public class HomeViewModel extends ViewModel {
     private void albumSetting(){ }//앨범자켓 가져오는 부분
 
 
-    public void musicCheck(){
+    public void check(){
         File[] list = fs.listFiles();
         file_num= list.length;
         if(fs.isDirectory()){
@@ -124,7 +124,6 @@ public class HomeViewModel extends ViewModel {
                                         Firebase();
                                     }
                                 }
-
                             }
 
                         }
@@ -171,6 +170,7 @@ public class HomeViewModel extends ViewModel {
                             if(Integer.parseInt(postSnapshot.getKey())==now){
                                 path=(String) postSnapshot.getValue();
                                 System.out.println(now+"찾음 "+path);
+                                callback.success(path);
                                 break;
                             }
 
@@ -186,8 +186,10 @@ public class HomeViewModel extends ViewModel {
         return path;
     }
 
-    public interface callback{
-        void success(String data);
-        void fail(String errorMessage);
+    public interface Callback{
+        void success(String s);
+    }
+    public void setCallback(Callback callback) {
+        this.callback = callback;
     }
 }
