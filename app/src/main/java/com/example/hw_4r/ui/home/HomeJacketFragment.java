@@ -1,9 +1,12 @@
 package com.example.hw_4r.ui.home;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -19,7 +22,10 @@ import com.example.hw_4r.databinding.FragmentHomeJacketBinding;
 public class HomeJacketFragment  extends Fragment {
     private HomeViewModel homeViewModel;
     private HomeFragment homeFragment;
+    private ImageView imageView;
+    private byte[] b;
     public FragmentHomeJacketBinding binding;
+
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +36,15 @@ public class HomeJacketFragment  extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_home_jacket, container, false);
 
         homeViewModel = ViewModelProviders.of(getActivity()).get(HomeViewModel.class);
+
+        b=homeViewModel.getAlbum();
+        if(b!=null){
+            System.out.println("이미지?: "+b);
+            imageView = (ImageView) rootView.findViewById(R.id.Jacket);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
+            imageView.setImageBitmap(bitmap) ;
+        }
+
 
 
         binding = DataBindingUtil.bind(rootView);

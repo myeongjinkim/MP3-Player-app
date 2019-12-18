@@ -22,23 +22,10 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.hw_4r.R;
 import com.example.hw_4r.databinding.FragmentHomeBinding;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import org.jaudiotagger.audio.AudioFileIO;
-import org.jaudiotagger.audio.mp3.MP3File;
-import org.jaudiotagger.tag.FieldKey;
-import org.jaudiotagger.tag.Tag;
-import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 
-import static androidx.constraintlayout.widget.Constraints.TAG;
 import static java.lang.Thread.sleep;
 
 public class HomeFragment extends Fragment {
@@ -66,10 +53,6 @@ public class HomeFragment extends Fragment {
 
     private String path;
 
-
-
-
-
     static {
         System.loadLibrary("native-lib");
     }
@@ -94,7 +77,9 @@ public class HomeFragment extends Fragment {
         maxSeekText = (TextView) rootView.findViewById(R.id.maxSeekTextView);
         seekbar = (SeekBar)rootView.findViewById(R.id.seekBar);
 
-        homeViewModel.check();
+        if(!homeViewModel.check()){
+            replaceToJacket();
+        }
         HomeViewModel.Callback callback = new HomeViewModel.Callback() {
             @Override
             public void success(String s) {

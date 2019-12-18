@@ -23,14 +23,16 @@ public class HomeModel{
     private String title;
     private String artist;
     private String lyrics;
+    private byte[] b;
 
     public HomeModel(){
 
     }
-    public HomeModel( String title, String artist,String lyrics){
+    public HomeModel( String title, String artist,String lyrics,byte[] b){
         this.title=title;
         this.artist = artist;
         this.lyrics = lyrics;
+        this.b=b;
     }
     public String getTitle(){
         return title;
@@ -40,6 +42,9 @@ public class HomeModel{
     }
     public String getLyrics(){
         return lyrics;
+    }
+    public byte[] getImageByte() {
+        return b;
     }
 
 
