@@ -2,25 +2,16 @@ package com.example.hw_4r.ui.home;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.MutableData;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import org.jaudiotagger.audio.AudioFileIO;
@@ -28,16 +19,12 @@ import org.jaudiotagger.audio.mp3.MP3File;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
-import org.jaudiotagger.tag.images.Artwork;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.HashMap;
-import java.util.Queue;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
@@ -108,7 +95,7 @@ public class HomeViewModel extends ViewModel {
 
 
 
-    public boolean check(){
+    public void check(){
         File[] list = fs.listFiles();
         if(list!=null){
 
@@ -154,10 +141,8 @@ public class HomeViewModel extends ViewModel {
                         });
                 nowPlayMusic();
             }
-            return true;
         }
         else{
-            return false;
         }
     }
     public void Firebase(){
@@ -179,7 +164,6 @@ public class HomeViewModel extends ViewModel {
                     try{
                         MP3File mp3 = (MP3File) AudioFileIO.read(f);
                         AbstractID3v2Tag tag2 = mp3.getID3v2Tag();
-
 
                         Tag tag = mp3.getTag();
                         title = tag.getFirst(FieldKey.TITLE);

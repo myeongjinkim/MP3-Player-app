@@ -1,47 +1,22 @@
 package com.example.hw_4r;
 
-import android.net.Uri;
 import android.os.Bundle;
 
-import com.example.hw_4r.ui.home.HomeModel;
 import com.example.hw_4r.ui.home.HomeViewModel;
 
-import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
-import android.os.Environment;
-import android.util.Log;
 import android.view.Menu;
-
 import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-
-import java.io.File;
-import java.util.HashMap;
-
-import org.jaudiotagger.audio.AudioFileIO;
-import org.jaudiotagger.audio.mp3.MP3File;
-import org.jaudiotagger.tag.FieldKey;
-import org.jaudiotagger.tag.Tag;
-import org.jaudiotagger.tag.TagException;
-import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
-
 
 
 public class MainActivity extends AppCompatActivity {
