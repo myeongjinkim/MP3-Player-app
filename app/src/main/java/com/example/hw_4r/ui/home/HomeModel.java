@@ -1,5 +1,6 @@
 package com.example.hw_4r.ui.home;
 
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -23,16 +24,16 @@ public class HomeModel{
     private String title;
     private String artist;
     private String lyrics;
-    private byte[] b;
+    private Bitmap bm;
 
     public HomeModel(){
 
     }
-    public HomeModel( String title, String artist,String lyrics,byte[] b){
+    public HomeModel(String title, String artist, String lyrics, Bitmap bm){
         this.title=title;
         this.artist = artist;
         this.lyrics = lyrics;
-        this.b=b;
+        this.bm=bm;
     }
     public String getTitle(){
         return title;
@@ -43,8 +44,8 @@ public class HomeModel{
     public String getLyrics(){
         return lyrics;
     }
-    public byte[] getImageByte() {
-        return b;
+    public Bitmap getBitMap() {
+        return bm;
     }
 
 

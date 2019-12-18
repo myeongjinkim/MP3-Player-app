@@ -1,5 +1,8 @@
 package com.example.hw_4r.ui.home;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -23,6 +26,7 @@ import org.jaudiotagger.audio.mp3.MP3File;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
+import org.jaudiotagger.tag.images.Artwork;
 
 import java.io.File;
 import java.util.HashMap;
@@ -48,7 +52,7 @@ public class HomeViewModel extends ViewModel {
     private String artist;
     private String title;
     private String lyricsDate;
-    private byte[] b;
+    private Bitmap bitmap;
 
     private HomeModel homeModel;
 
@@ -91,8 +95,8 @@ public class HomeViewModel extends ViewModel {
     }
 
 
-    public byte[] getAlbum(){
-        return b;
+    public Bitmap getAlbum(){
+        return bitmap;
     }
 
 
@@ -188,16 +192,27 @@ public class HomeViewModel extends ViewModel {
                 try{
                     MP3File mp3 = (MP3File) AudioFileIO.read(f);
                     AbstractID3v2Tag tag2 = mp3.getID3v2Tag();
-                    if(tag2.hasField("Cover Art")){
-                        b = tag2.getFirstArtwork().getBinaryData();
-                        System.out.println("이미지: "+b);
-                    }
+
 
                     Tag tag = mp3.getTag();
                     title = tag.getFirst(FieldKey.TITLE);
                     artist = tag.getFirst(FieldKey.ARTIST);
                     lyricsDate = tag.getFirst(FieldKey.LYRICS);
-                    homeModel = new HomeModel(title,artist,lyricsDate,b);
+
+                    bitmap = null;
+
+                    byte[] b = tag2.getFirstArtwork().getBinaryData();
+                    bitmap = BitmapFactory.decodeByteArray( b, 0, b.length ) ;
+
+                    if (null != bitmap) {
+
+                        System.out.println("비트맵 "+bitmap);
+
+                    }
+
+
+                    homeModel = new HomeModel(title,artist,lyricsDate,bitmap);
+
                     myRef.child("music_data").child(Integer.toString(music_num)).setValue(homeModel);
                 }catch(Exception ex){
                     ex.printStackTrace();
@@ -227,7 +242,8 @@ public class HomeViewModel extends ViewModel {
                         title=homeModel.getTitle();
                         artist=homeModel.getArtist();
                         LyricsSetting(homeModel.getLyrics());
-                        b=homeModel.getImageByte();
+                        //bitmap=homeModel.getBitMap();
+                        System.out.println("비트맵2"+bitmap);
                         callback.success(path);
 
                     }

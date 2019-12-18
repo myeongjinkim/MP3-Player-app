@@ -23,7 +23,7 @@ public class HomeJacketFragment  extends Fragment {
     private HomeViewModel homeViewModel;
     private HomeFragment homeFragment;
     private ImageView imageView;
-    private byte[] b;
+    private Bitmap bm;
     public FragmentHomeJacketBinding binding;
 
 
@@ -37,12 +37,15 @@ public class HomeJacketFragment  extends Fragment {
 
         homeViewModel = ViewModelProviders.of(getActivity()).get(HomeViewModel.class);
 
-        b=homeViewModel.getAlbum();
-        if(b!=null){
-            System.out.println("이미지?: "+b);
+        bm=homeViewModel.getAlbum();
+        if(bm!=null){
+            System.out.println("이미지?: "+bm);
+
             imageView = (ImageView) rootView.findViewById(R.id.Jacket);
-            Bitmap bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
-            imageView.setImageBitmap(bitmap) ;
+
+            imageView.setImageBitmap(bm) ;
+        }else{
+            System.out.println("타이틀 "+homeViewModel.getTitle());
         }
 
 

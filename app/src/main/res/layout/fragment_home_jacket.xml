@@ -23,7 +23,7 @@
                 android:id="@+id/Jacket"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="fitCenter"
+                android:scaleType="fitXY"
                 android:src = "@drawable/ic_action_no_image"
                 android:onClick="@{(view) -> fragment.pressJacket(view)}"/>
 
