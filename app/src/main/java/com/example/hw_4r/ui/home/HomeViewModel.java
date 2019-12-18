@@ -55,7 +55,7 @@ public class HomeViewModel extends ViewModel {
 
     public HomeViewModel() {
         lyrics = new MutableLiveData<>();
-        lyrics.setValue("This is home fragment");
+        lyrics.setValue("가사가 없습니다");
         check = true;
 
         path=("/data/data/com.example.hw_4r/music/");
