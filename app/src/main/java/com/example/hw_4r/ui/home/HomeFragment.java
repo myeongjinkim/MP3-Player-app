@@ -77,15 +77,12 @@ public class HomeFragment extends Fragment {
         maxSeekText = (TextView) rootView.findViewById(R.id.maxSeekTextView);
         seekbar = (SeekBar)rootView.findViewById(R.id.seekBar);
 
-        if(!homeViewModel.check()){
-            replaceToJacket();
-        }
+        homeViewModel.check();
+
         HomeViewModel.Callback callback = new HomeViewModel.Callback() {
             @Override
             public void success(String s) {
-                System.out.println("이거지"+s);
                 path=s;
-                System.out.println("출력 aa  "+path);
                 already();
             }
         };

@@ -24,16 +24,14 @@ public class HomeModel{
     private String title;
     private String artist;
     private String lyrics;
-    private Bitmap bm;
 
     public HomeModel(){
 
     }
-    public HomeModel(String title, String artist, String lyrics, Bitmap bm){
+    public HomeModel(String title, String artist, String lyrics){
         this.title=title;
         this.artist = artist;
         this.lyrics = lyrics;
-        this.bm=bm;
     }
     public String getTitle(){
         return title;
@@ -43,9 +41,6 @@ public class HomeModel{
     }
     public String getLyrics(){
         return lyrics;
-    }
-    public Bitmap getBitMap() {
-        return bm;
     }
 
 

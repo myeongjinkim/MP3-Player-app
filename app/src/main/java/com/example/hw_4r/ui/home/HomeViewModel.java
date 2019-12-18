@@ -13,6 +13,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,7 +30,12 @@ import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
 import org.jaudiotagger.tag.images.Artwork;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Queue;
 
@@ -41,6 +48,7 @@ public class HomeViewModel extends ViewModel {
 
     private File fs;
     private String path;
+    private String imgPath;
 
     private HashMap<Object, String> music_list_hm;
     private HashMap<Object, String> file_hm;
@@ -64,6 +72,7 @@ public class HomeViewModel extends ViewModel {
         check = true;
 
         path=("/data/data/com.example.hw_4r/music/");
+        imgPath=("/data/data/com.example.hw_4r/musicImage/");
         fs = new File(path);
         music_list_hm = new HashMap<>();
         file_hm = new HashMap<>();
@@ -91,13 +100,12 @@ public class HomeViewModel extends ViewModel {
         lyrics.setValue(text);
     }
     public String getPath(){
-        return path.toString();
+        return path;
+    }
+    public String getImgPath(){
+        return imgPath;
     }
 
-
-    public Bitmap getAlbum(){
-        return bitmap;
-    }
 
 
     public boolean check(){
@@ -106,32 +114,17 @@ public class HomeViewModel extends ViewModel {
 
             file_num= list.length;
             if(fs.isDirectory()){
-                System.out.println("디렉토리가 맞음");
                 for(File f : list){
                     file_size+=f.length();
                 }
-                System.out.println(file_num);
-                System.out.println(file_size);
-
-                String s = myRef.child("file").getKey();
-
-
-                System.out.println("뭔데"+s);
-                System.out.println(myRef.child("file").equals(file_hm));
-                System.out.println("뭔데"+myRef.child("file").equals(file_hm));
-                file_hm.put(Integer.toString(file_num),Integer.toString(file_size));
-                System.out.println("뭔데"+myRef.child("file").equals(file_hm));
-
 
                 myRef.child("file").addListenerForSingleValueEvent(
                         new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                // Get user value
-                                System.out.println("d언제되는지");
+
                                 file_hm = (HashMap<Object, String>) (dataSnapshot.getValue());
                                 if(file_hm==null){
-                                    System.out.println("디비에 없음 완전 새로");
                                     file_hm = new HashMap<>();
                                     file_hm.put(Integer.toString(file_num),Integer.toString(file_size));
                                     myRef.child("file").setValue(file_hm);
@@ -142,11 +135,8 @@ public class HomeViewModel extends ViewModel {
                                         String value = file_hm.get(key);
 
                                         if(key.equals(Integer.toString(file_num))&&value.equals(Integer.toString(file_size))){
-                                            System.out.println("디비랑 같음");
-                                            Firebase();
                                             break;
                                         }else{
-                                            System.out.println("디비랑 다름. 새로 입력");
                                             file_hm = new HashMap<>();
                                             file_hm.put(Integer.toString(file_num),Integer.toString(file_size));
                                             myRef.child("file").setValue(file_hm);
@@ -162,64 +152,80 @@ public class HomeViewModel extends ViewModel {
                                 Log.w(TAG, "getUser:onCancelled", databaseError.toException());
                             }
                         });
-                System.out.println("이게 분명 뒤지");
                 nowPlayMusic();
             }
-
-
             return true;
         }
         else{
             return false;
         }
-
-
     }
     public void Firebase(){
         music_list_hm = new HashMap<>();
-        fs = new File(path.toString());
+        fs = new File(path);
         if(fs.isDirectory()){
             String decoding = "ISO-8859-1";
             String encoding = "EUC-KR";
 
             File list[] = fs.listFiles();
-            for(File f : list){
-                music_num++;
-                music_list_hm.put(Integer.toString(music_num), f.toString());
-                myRef.child("music_list").setValue(music_list_hm);
-                myRef.child("current").setValue(1);
+            for(File f : list) {
+                if (f.isFile()) {
 
-                try{
-                    MP3File mp3 = (MP3File) AudioFileIO.read(f);
-                    AbstractID3v2Tag tag2 = mp3.getID3v2Tag();
+                    music_num++;
+                    music_list_hm.put(Integer.toString(music_num), f.toString());
+                    myRef.child("music_list").setValue(music_list_hm);
+                    myRef.child("current").setValue(1);
+
+                    try{
+                        MP3File mp3 = (MP3File) AudioFileIO.read(f);
+                        AbstractID3v2Tag tag2 = mp3.getID3v2Tag();
 
 
-                    Tag tag = mp3.getTag();
-                    title = tag.getFirst(FieldKey.TITLE);
-                    artist = tag.getFirst(FieldKey.ARTIST);
-                    lyricsDate = tag.getFirst(FieldKey.LYRICS);
+                        Tag tag = mp3.getTag();
+                        title = tag.getFirst(FieldKey.TITLE);
+                        artist = tag.getFirst(FieldKey.ARTIST);
+                        lyricsDate = tag.getFirst(FieldKey.LYRICS);
 
-                    bitmap = null;
+                        bitmap = null;
 
-                    byte[] b = tag2.getFirstArtwork().getBinaryData();
-                    bitmap = BitmapFactory.decodeByteArray( b, 0, b.length ) ;
+                        byte[] b = tag2.getFirstArtwork().getBinaryData();
+                        bitmap = BitmapFactory.decodeByteArray( b, 0, b.length ) ;
 
-                    if (null != bitmap) {
+                        //저장할 파일 이름
+                        String fileName = title + ".jpg";
 
-                        System.out.println("비트맵 "+bitmap);
+                        File imgDir = new File(imgPath);
 
+                        //storage 에 파일 인스턴스를 생성합니다.
+                        File tempFile = new File(imgPath, fileName);
+
+                        try {
+                            // 자동으로 빈 파일을 생성합니다.
+                            tempFile.createNewFile();
+
+                            // 파일을 쓸 수 있는 스트림을 준비합니다.
+                            FileOutputStream out = new FileOutputStream(tempFile);
+
+                            // compress 함수를 사용해 스트림에 비트맵을 저장합니다.
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+
+                            // 스트림 사용후 닫아줍니다.
+                            out.close();
+
+                        } catch (FileNotFoundException e) {
+                            Log.e("MyTag","FileNotFoundException : " + e.getMessage());
+                        } catch (IOException e) {
+                            Log.e("MyTag","IOException : " + e.getMessage());
+                        }
+
+                        homeModel = new HomeModel(title,artist,lyricsDate);
+
+                        myRef.child("music_data").child(Integer.toString(music_num)).setValue(homeModel);
+                    }catch(Exception ex){
+                        ex.printStackTrace();
                     }
 
-
-                    homeModel = new HomeModel(title,artist,lyricsDate,bitmap);
-
-                    myRef.child("music_data").child(Integer.toString(music_num)).setValue(homeModel);
-                }catch(Exception ex){
-                    ex.printStackTrace();
                 }
-
-
-
             }
         }
         else {
@@ -236,18 +242,14 @@ public class HomeViewModel extends ViewModel {
                         now = ((Long)dataSnapshot.child("current").getValue()).intValue();
                         path=(String)dataSnapshot.child("music_list").child(Integer.toString(now)).getValue();
 
-                        System.out.println(now+"찾음 "+path);
-
                         homeModel= dataSnapshot.child("music_data").child(Integer.toString(now)).getValue(HomeModel.class);
                         title=homeModel.getTitle();
                         artist=homeModel.getArtist();
                         LyricsSetting(homeModel.getLyrics());
-                        //bitmap=homeModel.getBitMap();
-                        System.out.println("비트맵2"+bitmap);
+
                         callback.success(path);
 
                     }
-
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         Log.w(TAG, "getUser:onCancelled", databaseError.toException());

@@ -2,6 +2,7 @@ package com.example.hw_4r.ui.home;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,8 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.hw_4r.R;
 import com.example.hw_4r.databinding.FragmentHomeJacketBinding;
+
+import java.io.File;
 
 public class HomeJacketFragment  extends Fragment {
     private HomeViewModel homeViewModel;
@@ -37,18 +40,15 @@ public class HomeJacketFragment  extends Fragment {
 
         homeViewModel = ViewModelProviders.of(getActivity()).get(HomeViewModel.class);
 
-        bm=homeViewModel.getAlbum();
-        if(bm!=null){
-            System.out.println("이미지?: "+bm);
+        String imgPath = homeViewModel.getImgPath();
+        File img = new File(imgPath+homeViewModel.getTitle()+".jpg");
 
+        if(img.isFile()){
+            Bitmap bitmap = BitmapFactory.decodeFile(imgPath+homeViewModel.getTitle()+".jpg");
             imageView = (ImageView) rootView.findViewById(R.id.Jacket);
-
-            imageView.setImageBitmap(bm) ;
+            imageView.setImageBitmap(bitmap);
         }else{
-            System.out.println("타이틀 "+homeViewModel.getTitle());
         }
-
-
 
         binding = DataBindingUtil.bind(rootView);
         binding.setFragment(this);
